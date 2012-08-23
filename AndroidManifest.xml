@@ -19,20 +19,5 @@
     		android:process=".counter"	android:icon="@drawable/ic_rc_timer">
     	</service>
 
-		<receiver
-			android:icon="@drawable/ic_rc_timer"
-			android:name=".CDTWidget">
-
-			<intent-filter>
-				<action
-					android:name="android.appwidget.action.APPWIDGET_UPDATE" />
-				<actinon
-					android:name="ypsilon.app.cdn.YP_CDT_TIMECHANGE" />
-			</intent-filter>
-			<meta-data
-				android:name="android.appwidget.provider"
-				android:resource="@xml/cdtwidget">
-			</meta-data>
-		</receiver>
 	</application>
 </manifest>
