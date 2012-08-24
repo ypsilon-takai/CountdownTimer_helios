@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import android.util.Log;
 
+
 public class Converter {
 
     public HashMap<Integer, Integer> numToResid;
@@ -16,13 +17,12 @@ public class Converter {
 
     	initSoundData();
 
-
 	}
 
     private void initSoundData () {
 
     	wordToResid.put("start", R.raw.voice_start);
-    	wordToResid.put("finished", R.raw.voice_finished);
+    	wordToResid.put("finished", R.raw.horn_02);
 
     	numToResid.put(0, R.raw.voice_000);
     	numToResid.put(1, R.raw.voice_001);

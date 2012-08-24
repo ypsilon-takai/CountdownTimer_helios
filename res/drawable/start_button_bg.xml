@@ -5,10 +5,5 @@
     	android:drawable="@drawable/plastic_button_gray"/>
     <item
     	android:state_enabled="true"
-    	android:state_checked="false"
     	android:drawable="@drawable/plastic_button" />
-    <item
-        android:state_enabled="true"
-    	android:state_checked="true"
-    	android:drawable="@drawable/plastic_red_button" />
 </selector>

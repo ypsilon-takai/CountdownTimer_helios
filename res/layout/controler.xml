@@ -4,8 +4,8 @@
     android:orientation="vertical"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:paddingRight="10px"
-    android:paddingLeft="10px"
+    android:paddingRight="10dp"
+    android:paddingLeft="10dp"
     android:paddingTop="30sp"
     android:background="@drawable/bg">
 
@@ -27,7 +27,7 @@
 			android:padding="10sp"
 			android:textColor="#2e474c"
 			android:textSize="90sp"
-			android:text="00'00" >
+			android:text="@string/init_0min" >
 		</TextView>
 	</LinearLayout>
 
@@ -45,13 +45,13 @@
 				android:orientation="vertical" android:id="@+id/LL_MainButton"
 				android:layout_width="fill_parent" android:layout_gravity="center_horizontal">
 
-				<ToggleButton android:id="@+id/Bt_Main" android:layout_height="wrap_content"
+				<Button android:id="@+id/Bt_Main" android:layout_height="wrap_content"
 					android:layout_width="fill_parent" android:padding="7sp"
 					android:layout_margin="5sp" android:layout_gravity="center"
 					android:height="110sp" android:textOff="Wait.." android:textOn="00:00"
-					android:text="Start" android:textSize="40sp"
+					android:text="@string/text_start" android:textSize="40sp"
 					android:background="@drawable/start_button_bg" android:textColor="#eee">
-				</ToggleButton>
+				</Button>
 			</LinearLayout>
 
 
@@ -63,19 +63,19 @@
 				<TableRow android:id="@+id/TR_1" android:layout_height="wrap_content"
 					android:layout_width="fill_parent">
 
-					<Button android:id="@+id/Bt_00" android:text="10'"
+					<Button android:id="@+id/Bt_00" android:text="@string/text_10min"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5sp" android:height="60sp"
 						android:textSize="24sp" android:textColor="#eee"
 						android:background="@drawable/plastic_button">
 					</Button>
-					<Button android:text=" 5'" android:id="@+id/Bt_01"
+					<Button android:text="@string/text_5min" android:id="@+id/Bt_01"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5sp" android:height="60sp"
 						android:textSize="24sp" android:background="@drawable/plastic_button"
 						android:textColor="#eee">
 					</Button>
-					<Button android:text=" 3'" android:id="@+id/Bt_02"
+					<Button android:text="@string/text_3min" android:id="@+id/Bt_02"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5sp" android:height="60sp"
 						android:textSize="24sp" android:background="@drawable/plastic_button"
@@ -84,19 +84,19 @@
 				</TableRow>
 				<TableRow android:id="@+id/TR_2" android:layout_height="wrap_content"
 					android:layout_width="fill_parent">
-					<Button android:text=" 2'" android:id="@+id/Bt_10"
+					<Button android:text="@string/text_2min" android:id="@+id/Bt_10"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5sp" android:height="60sp"
 						android:textSize="24sp" android:background="@drawable/plastic_button"
 						android:textColor="#eee">
 					</Button>
-					<Button android:text=" 1'" android:id="@+id/Bt_11"
+					<Button android:text="@string/text_1min" android:id="@+id/Bt_11"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5sp" android:height="60sp"
 						android:textSize="24sp" android:background="@drawable/plastic_button"
 						android:textColor="#eee">
 					</Button>
-					<Button android:id="@+id/Bt_12" android:text='30"'
+					<Button android:id="@+id/Bt_12" android:text="@string/text_30sec"
 						android:layout_width="wrap_content" android:layout_height="wrap_content"
 						android:layout_margin="5sp" android:height="60sp"
 						android:textSize="24sp" android:background="@drawable/plastic_button"
@@ -134,11 +134,11 @@
 			android:layout_width="fill_parent" android:layout_marginBottom="30sp"
 			android:background="@drawable/bg">
 
-			<ToggleButton android:id="@+id/Bt_Sub_Main" android:layout_height="fill_parent"
+			<Button android:id="@+id/Bt_Sub_Main" android:layout_height="fill_parent"
 				android:layout_width="fill_parent" android:padding="7sp"
-				android:layout_margin="5sp" android:text="Start" android:textSize="40sp"
+				android:layout_margin="5sp" android:text="@string/text_start" android:textSize="40sp"
 				android:background="@drawable/plastic_button" android:textColor="#eee">
-			</ToggleButton>
+			</Button>
 		</LinearLayout>
 		<!-- End ONE button layout -->
 
