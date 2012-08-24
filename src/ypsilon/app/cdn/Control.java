@@ -35,7 +35,7 @@ public class Control extends Activity implements ServiceConnection{
 	private ViewFlipper vfSelector;
 
 	// Many button layout
-	private ToggleButton btStartStop;
+	private Button btStartStop;
     private Button bt00;
     private Button bt01;
     private Button bt02;
@@ -46,7 +46,7 @@ public class Control extends Activity implements ServiceConnection{
     private ToggleButton tgbPrecall;
 
     // One button layout
-    private ToggleButton btStartStopBig;
+    private Button btStartStopBig;
 
 
     /**
@@ -110,18 +110,20 @@ public class Control extends Activity implements ServiceConnection{
         // set volumecontrol to stream while running
         setVolumeControlStream(AudioManager.STREAM_MUSIC);
 
-
+        // set entire layout
         setContentView(R.layout.controler);
 
+        // Setup timer display area
         tvTimeView = (TextView)findViewById(R.id.TimeView);
 
-        // Set time display font to 12-seg font.
+        // -- font
         Typeface dispfont = Typeface.createFromAsset(getAssets(), "fonts/Seg12Modern.ttf");
         tvTimeView.setTypeface(dispfont);
 
+        // flipper
         vfSelector = (ViewFlipper)findViewById(R.id.VF_switcher);
 
-        btStartStop = (ToggleButton)findViewById(R.id.Bt_Main);
+        btStartStop = (Button)findViewById(R.id.Bt_Main);
         bt00 = (Button)findViewById(R.id.Bt_00);
         bt01 = (Button)findViewById(R.id.Bt_01);
         bt02 = (Button)findViewById(R.id.Bt_02);
@@ -131,12 +133,12 @@ public class Control extends Activity implements ServiceConnection{
         tgbImmediate = (ToggleButton)findViewById(R.id.TG_immediate);
         tgbPrecall = (ToggleButton)findViewById(R.id.TG_countdown);
 
-        btStartStopBig = (ToggleButton)findViewById(R.id.Bt_Sub_Main);
+        btStartStopBig = (Button)findViewById(R.id.Bt_Sub_Main);
 
         // Converter class provides format exchange functionality.
         tvTimeView.setText(Converter.formatTimeSec(setTimeVal));
-        btStartStop.setTextOn(Converter.formatTimeSec(setTimeVal));
-		btStartStopBig.setTextOn(Converter.formatTimeSec(setTimeVal));
+        btStartStop.setText(getResources().getString(R.string.text_init));
+		btStartStopBig.setText(getResources().getString(R.string.text_init));
 
 		// ********
 		// * Small start button
@@ -172,13 +174,13 @@ public class Control extends Activity implements ServiceConnection{
 		// ********
         // * Big start button
         //
-        // Big button is not act with click.
+        // Big button NOT act with short click.
         btStartStopBig.setOnClickListener(new View.OnClickListener() {
 			public void onClick(View v) {
 				// Do nothing
 			}
 		});
-        // Big button is act with long click.
+        // Big button act with long click.
         btStartStopBig.setOnLongClickListener(new View.OnLongClickListener() {
 			public boolean onLongClick(View v) {
 				startOrStop();
@@ -244,6 +246,21 @@ public class Control extends Activity implements ServiceConnection{
 
     }
 
+    private void setStartButtonsColor (boolean running) {
+    	if (running) {
+    		btStartStop.setBackgroundResource(R.drawable.plastic_red_button);
+    		btStartStopBig.setBackgroundResource(R.drawable.plastic_red_button);
+    	} else {
+    		btStartStop.setBackgroundResource(R.drawable.plastic_button);
+    		btStartStopBig.setBackgroundResource(R.drawable.plastic_button);
+    	}
+    }
+
+    private void setStartButtonsText (String s) {
+    	btStartStop.setText(s);
+    	btStartStopBig.setText(s);
+    }
+    
     @Override
     public void onStart () {
     	super.onStart();
@@ -264,8 +281,8 @@ public class Control extends Activity implements ServiceConnection{
 
     					if (timerRunning == false) {
     		        		timerRunning = true;
-    		        		btStartStop.setChecked(true);
-    		        		btStartStopBig.setChecked(true);
+    		        		setStartButtonsColor(true);
+    		        		setStartButtonsText(Converter.formatTimeSec(setTimeVal));
     					}
 
     					time = message.getExtras().getInt("TIME", 0);
@@ -285,6 +302,7 @@ public class Control extends Activity implements ServiceConnection{
     		registerReceiver(bcReceiver, filter);
 
     		// connect or create timer service here
+    		// service calls back when ready
     		if (bindToService == false) {
     			Intent intent = new Intent(this, CountService.class);
     			bindService(intent, this, Context.BIND_AUTO_CREATE);
@@ -365,9 +383,9 @@ public class Control extends Activity implements ServiceConnection{
     			}
 
         		timerRunning = true;
-        		btStartStop.setChecked(true);
-        		btStartStopBig.setChecked(true);
-
+        		setStartButtonsColor(true);
+        		setStartButtonsText(Converter.formatTimeSec(setTimeVal));
+        		
     		} catch (Exception e) {
     			tvTimeView.setText("ERROR!");
 			}
@@ -377,14 +395,12 @@ public class Control extends Activity implements ServiceConnection{
     }
 
     /**
-     * Set Time Dispplay and two start buttons' text.
+     * Set Time Dispplay.
      * @param time : time as seconds.
      */
     public void setTimeDisp (int time) {
     	String st = Converter.formatTimeSec(time);
 		tvTimeView.setText(st);
-		btStartStop.setTextOn(st);
-		btStartStopBig.setTextOn(st);
     }
 
     /**
@@ -392,8 +408,8 @@ public class Control extends Activity implements ServiceConnection{
      */
     private void resetDisp () {
 		tvTimeView.setText(Converter.formatTimeSec(setTimeVal));
-		btStartStop.setChecked(false);
-		btStartStopBig.setChecked(false);
+		setStartButtonsColor(false);
+		setStartButtonsText(getResources().getString(R.string.text_start));
     }
 
 
@@ -426,20 +442,15 @@ public class Control extends Activity implements ServiceConnection{
 
     public void onServiceConnected(ComponentName name, IBinder service) {
 
-
 		Log.d( "HLGT Debug", "Control onServiceConnected()");
 
     	counterService = CounterSvcIF.Stub.asInterface(service);
     	bindToService = true;
 
-
     	btStartStop.setEnabled(true);
-    	btStartStop.setTextOff("Start");
-    	btStartStop.setText("Start");
-
     	btStartStopBig.setEnabled(true);
-    	btStartStopBig.setTextOff("Start");
-    	btStartStopBig.setText("Start");
+
+    	setStartButtonsText(getResources().getString(R.string.text_start));
 
     }
 
