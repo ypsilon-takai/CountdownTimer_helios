@@ -16,7 +16,8 @@
         </activity>
     	<service
     		android:name="CountService"
-    		android:process=".counter"	android:icon="@drawable/ic_rc_timer">
+    		android:process=":counter"	
+    		android:icon="@drawable/ic_rc_timer">
     	</service>
 
 	</application>

@@ -100,6 +100,8 @@ public class Control extends Activity implements ServiceConnection{
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d( "HLGT Debug", "Control onCreate()");
+
         setTimeVal = 60;
         preTimeVal = 5;
 
@@ -265,6 +267,8 @@ public class Control extends Activity implements ServiceConnection{
     public void onStart () {
     	super.onStart();
 
+		Log.d( "HLGT Debug", "Control onStart()");
+    	
     	// **************
     	//  Broadcast receiver
     	if (bcReceiver == null) {
@@ -277,7 +281,7 @@ public class Control extends Activity implements ServiceConnection{
     				boolean csstate = message.getExtras().getBoolean("STATE");
     				if (csstate == true) {
 
-        				Log.d( "HLGT Debug", "Control onReceive()" + csstate + " " + time);
+//        				Log.d( "HLGT Debug", "Control onReceive()" + csstate + " " + time);
 
     					if (timerRunning == false) {
     		        		timerRunning = true;
@@ -303,9 +307,13 @@ public class Control extends Activity implements ServiceConnection{
 
     		// connect or create timer service here
     		// service calls back when ready
+
+    		
     		if (bindToService == false) {
+    			Log.d( "HLGT Debug", "Binding to service.");
     			Intent intent = new Intent(this, CountService.class);
-    			bindService(intent, this, Context.BIND_AUTO_CREATE);
+        		startService(intent);
+        		bindService(intent, this, Context.BIND_AUTO_CREATE);
     		}
     	}
 
@@ -338,7 +346,12 @@ public class Control extends Activity implements ServiceConnection{
 		if (sstate != null) {
 			if (sstate.getBoolean("BUSY") == false) {
 				try {
+
+					Log.d( "HLGT Debug", "CountService Calling stopService()");
+
 					counterService.end();
+	    			Intent intent = new Intent(this, CountService.class);
+					stopService(intent);
 				} catch (Exception e) {
 					// do nothing
 				}
@@ -373,6 +386,7 @@ public class Control extends Activity implements ServiceConnection{
     		try {
     			counterService.stop();
     		} catch (Exception e) {
+    			Log.d( "HLGT Debug", e.toString());
 			}
     	} else {
     		try {
@@ -463,7 +477,7 @@ public class Control extends Activity implements ServiceConnection{
 	}
 
 	private Bundle getCounterServiceState () {
-		if (bindToService == true && counterService != null) {
+		if (counterService != null) {
 			try {
 				return counterService.getState();
 			} catch (RemoteException e) {

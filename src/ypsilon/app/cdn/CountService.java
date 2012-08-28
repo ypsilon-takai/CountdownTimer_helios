@@ -17,12 +17,13 @@ public class CountService extends Service {
 	private Caller caller;
 	private TickTick ticktick;
 
+	private int refCount;
 
 	public void onCreate () {
 		remainTime = 0;
 		counting = false;
 
-		Log.d( "HLGT Debug", "CountService create()");
+		Log.d( "HLGT CS", "CountService create()");
 
 		caller = new Caller(this);
 
@@ -31,16 +32,39 @@ public class CountService extends Service {
 				countDown();
 			}
 		};
+		
+		refCount = 0;
 	}
 
 	@Override
+	public int onStartCommand (Intent intent, int flags, int startId) {
+		Log.d( "HLGT CS", "CountService onStartCommand()");
+		
+		return START_NOT_STICKY;
+	}
+	
+	@Override
 	public IBinder onBind(Intent arg0) {
 
-		Log.d( "HLGT Debug", "CountService onBind()");
+		Log.d( "HLGT CS", "CountService onBind()");
 
+		refCount++;
+		
 		return csifImplement;
 	}
+	
+	@Override
+	public boolean onUnbind(Intent arg0) {
+		Log.d( "HLGT CS", " onUnbind()");
+		
+		if (refCount > 0) {
+			refCount--;
+		}
+		
+		return false;
+	}
 
+	
 	public CounterSvcIF.Stub csifImplement = new CounterSvcIF.Stub() {
 
 		public boolean setTime(int time, int pretime) throws RemoteException {
@@ -64,15 +88,24 @@ public class CountService extends Service {
 		}
 	};
 
-	private boolean setTime(int time, int pretime) {
-		remainTime = time;
-		remainPreTime = pretime;
 
-		return true;
+	// Control functions
+	
+	private boolean setTime(int time, int pretime) {
+		Log.d( "HLGT CS", "CountService setTime()");
+
+		if (!counting) {
+			remainTime = time;
+			remainPreTime = pretime;
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 
 	private void start(int time, int pretime) {
+		Log.d( "HLGT CS", "CountService start()");
 		this.setTime(time, pretime);
 		counting = true;
 		ticktick.start();
@@ -80,7 +113,7 @@ public class CountService extends Service {
 
 	private void stop () {
 
-		Log.d( "HLGT Debug", "CountService Stop()");
+		Log.d( "HLGT CS", "CountService stop()");
 
 		ticktick.cancel();
 
@@ -92,7 +125,7 @@ public class CountService extends Service {
 
 	private void end () {
 
-		Log.d( "HLGT Debug", "CountService end()");
+		Log.d( "HLGT CS", "CountService end()");
 
 		if (ticktick != null) {
 			ticktick.cancel();
@@ -102,6 +135,9 @@ public class CountService extends Service {
 	}
 
 	private Bundle getState () {
+
+		Log.d( "HLGT CS", "CountService getState()");
+
 		Bundle res = new Bundle();
 
 		res.putBoolean("BUSY", counting);
@@ -118,31 +154,34 @@ public class CountService extends Service {
 	public void countDown () {
 		Intent message = new Intent ("YP_CDT_TIMECHANGE");
 
-
-
     	if (remainPreTime > 0) {
-    		Log.d("HLGT Debug", "cd 01");
+//    		Log.d("CountService", "cd 01");
     		caller.say(remainPreTime);
     		// *** call controler
     		message.putExtra("STATE", counting);
     		message.putExtra("TIME", remainPreTime);
     		remainPreTime--;
     	} else if ( remainTime > 0){
-    		Log.d("HLGT Debug", "cd 02");
+//    		Log.d("CountService", "cd 02");
         	caller.say(remainTime);
     		// *** call controler
     		message.putExtra("STATE", counting);
     		message.putExtra("TIME", remainTime);
        		remainTime--;
     	} else if ( remainTime <= 0) {
-    		Log.d("HLGT Debug", "cd finish");
+    		Log.d("CountService", "cd finish");
 			caller.say("finished");
 			ticktick.cancel();
 			counting = false;
     		// *** call controler
     		message.putExtra("STATE", counting);
+
+    		if (refCount <= 0) {
+    			Log.d( "HLGT CS", "CountService Calling stopSerf()");
+    			this.stopSelf();
+    		}
     	} else {
-    		Log.d("HLGT Debug", "cd error");
+//    		Log.d("CountService", "cd error");
         	caller.say(remainTime);
     		// *** call controler
     		message.putExtra("STATE", counting);
@@ -150,7 +189,7 @@ public class CountService extends Service {
     		remainTime--;
     	}
 
-    	Log.d( "HLGT Debug", "CountService " + counting + " : rem=" + remainPreTime +  " rem=" + remainTime);
+//    	Log.d( "CountService", "CountService " + counting + " : rem=" + remainPreTime +  " rem=" + remainTime);
 
     	// send broadcast message
     	sendBroadcast(message);
